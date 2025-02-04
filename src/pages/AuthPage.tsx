@@ -10,13 +10,17 @@ const AuthPage = () => {
     const navigate = useNavigate()
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      
       const id = e.target.value
       setIdInstance(Number(id))
     }
-    const handleSubmit = () => {
+    const handleSubmit = (e:React.FormEvent) => {
+      e.preventDefault()
+      debugger
         if(idInstance&&apiTokenInstance) {
           dispatch(setCredentials({ idInstance, apiTokenInstance }))
-            navigate('/contact')
+          debugger
+          navigate('/contact')
         }
     }
   return (

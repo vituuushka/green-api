@@ -1,12 +1,8 @@
 import { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
 import { sendMessage } from '../store/slices/chatSlice';
-import { store } from '../store/store';
 import { useAppDispatch, useAppSelector } from '../hooks/hooks';
 
 const ChatPage = () => {
-  const { contact } = useParams();
   const dispatch = useAppDispatch()
   const messages = useAppSelector(state => state.chat.messages)
   const [message, setMessage] = useState('')
