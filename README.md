@@ -1,3 +1,12 @@
+Тестовое задание Green-api  
+![Скриншот задания](/src/images/task-screen.png)  
+демонстрация проекта  
+![Скриншот демонстрации](/src/images/demo-1.png)  
+![Скриншот демонстрации](/src/images/demo-2.png)  
+![Скриншот демонстрации](/src/images/demo-3.png)  
+![Скриншот демонстрации](/src/images/demo-4.png)  
+![Скриншот демонстрации](/src/images/demo-5.png)  
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
