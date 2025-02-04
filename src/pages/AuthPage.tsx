@@ -16,10 +16,10 @@ const AuthPage = () => {
     }
     const handleSubmit = (e:React.FormEvent) => {
       e.preventDefault()
-      debugger
+      
         if(idInstance&&apiTokenInstance) {
           dispatch(setCredentials({ idInstance, apiTokenInstance }))
-          debugger
+     
           navigate('/contact')
         }
     }

@@ -1,12 +1,27 @@
-import { useState } from 'react'
-import { sendMessage } from '../store/slices/chatSlice';
+import { useEffect, useState } from 'react'
+import { getInComingMessages, sendMessage } from '../store/slices/chatSlice';
 import { useAppDispatch, useAppSelector } from '../hooks/hooks';
 
 const ChatPage = () => {
   const dispatch = useAppDispatch()
-  const messages = useAppSelector(state => state.chat.messages)
+ 
+  const inComingMessages = useAppSelector(state => state.chat.inComingMessages)
+  const outGoingMessages = useAppSelector(state => state.chat.OutGoingMessages)
+
+  const allMessages = [...outGoingMessages, ...inComingMessages ].sort((a, b) => (a.timestamp - b.timestamp))
+
+
+
   const [message, setMessage] = useState('')
   
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      dispatch(getInComingMessages({}))
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, []);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (message.trim()) {
@@ -16,15 +31,14 @@ const ChatPage = () => {
   }
   return (
     <div>
-
       <div>
-        {messages.map((m) => (
+        {inComingMessages.map((m) => (
           <div>{m.textMessage}</div>
         ))}
       </div>
       <form onSubmit={handleSubmit}>
       <input type='text' placeholder='Новое сообщение...' value={message} onChange={(e) => {setMessage(e.target.value)}} />
-      <button type='submit' >Отправить</button>
+      <button type='submit'>Отправить</button>
       </form>
     </div>
   )

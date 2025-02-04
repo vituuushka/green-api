@@ -19,8 +19,8 @@ interface AuthState {
     
 }
 interface ChatState {
-    
-    messages: Message[],
+    inComingMessages: Message[],
+    OutGoingMessages: Message[],
     loading: boolean,
     error: string | null
 }
@@ -31,8 +31,8 @@ const initialAuthState: AuthState = {
     
 }
 const initialChatState: ChatState = {
-    
-    messages: [],
+    inComingMessages: [],
+    OutGoingMessages: [],
     loading: false,
     error: null
 }
@@ -42,25 +42,52 @@ const authSlice = createSlice({
   initialState: initialAuthState,
   reducers: {
     setCredentials: (state, action: PayloadAction<{ idInstance: number; apiTokenInstance: string }>) => {
-      debugger
+      
       state.idInstance = action.payload.idInstance;
       state.apiTokenInstance = action.payload.apiTokenInstance;
-      debugger
+      
     },
     setChatId: (state, action: PayloadAction<string>) => {
-      debugger
+     
       state.chatId = action.payload;
     },
   },
 });
 
-// export const fetchMessages = createAsyncThunk<[]>(
-//     'chat/fetchMessages',
-//     async () => {
-//       const response = await axios.get('https://your-api.com/get-messages');
-//       return response.data;
-//     }
-//   );
+export const getInComingMessages = createAsyncThunk<
+Message[],
+{},
+{ state: RootState }
+>('chat/getMessages', async ({ }, {getState}) => {
+      const state = getState()
+  const idInstance = state.auth.idInstance
+  const apiTokenInstance = state.auth.apiTokenInstance
+  const chatId = state.auth.chatId
+      const response = await axios.get<{
+        textMessage: string,
+        idMessage: string,
+        chatId: string,
+        timestamp: number
+
+      }[]>(`https://1103.api.green-api.com/waInstance${idInstance}/lastIncomingMessages/${apiTokenInstance}?minutes=10`);
+      debugger
+      const res = response.data;
+      const filteredInComing = res.filter((m) => {
+        const sfsd = m.chatId ===chatId
+        debugger
+        return sfsd
+      })
+      debugger
+      const inComing = filteredInComing.map((m) => {
+        return {idMessage: m.idMessage,
+        timestamp: m.timestamp,
+        textMessage: m.textMessage,
+        isIncoming: true}})
+        debugger
+      return inComing
+    }
+  
+  );
   
 export const sendMessage = createAsyncThunk<
   Message,
@@ -87,22 +114,34 @@ const chatSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
       builder
-        // .addCase(fetchMessages.pending, (state) => {
+        .addCase(getInComingMessages.pending, (state) => {
+          state.loading = true;
+          state.error = null;
+        })
+        .addCase(getInComingMessages.fulfilled, (state, action: PayloadAction<Message[]>) => {
+          state.loading = false;
+          state.inComingMessages = action.payload;
+        })
+        .addCase(getInComingMessages.rejected, (state, action) => {
+          state.loading = false;
+          state.error = action.error.message ?? 'Ошибка загрузки';
+        })
+        // .addCase(getMessages.pending, (state) => {
         //   state.loading = true;
         //   state.error = null;
         // })
-        // .addCase(fetchMessages.fulfilled, (state, action: PayloadAction<[]>) => {
+        // .addCase(getMessages.fulfilled, (state, action: PayloadAction<[]>) => {
         //   state.loading = false;
         //   state.messages = action.payload;
         // })
-        // .addCase(fetchMessages.rejected, (state, action) => {
+        // .addCase(getMessages.rejected, (state, action) => {
         //   state.loading = false;
         //   state.error = action.error.message ?? 'Ошибка загрузки';
         // })
         
-        .addCase(sendMessage.fulfilled, (state, action: PayloadAction<Message>) => {
-          state.messages.push(action.payload);
-        });
+        // .addCase(sendMessage.fulfilled, (state, action: PayloadAction<Message>) => {
+        //   state.messages.push(action.payload);
+        // });
     },
   });
   
