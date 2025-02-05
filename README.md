@@ -1,4 +1,5 @@
 Тестовое задание Green-api  
+ссылка на деплой: https://vituuushka.github.io/green-api/  
 ![Скриншот задания](/src/images/task-screen.png)  
 демонстрация проекта  
 ![Скриншот демонстрации](/src/images/demo-1.png)  
